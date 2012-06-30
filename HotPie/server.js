@@ -4,16 +4,21 @@
  */
 
 require('coffee-script');
-var express = require('express');
+
+var express = require('express'),
     RedisStore = require('connect-redis')(express);
+
+require('express-namespace');
 
 var app = module.exports = express.createServer();
 
-//  \ Configuration
+// Configuration
+require('./apps/socket-io')(app);
+
 app.configure(function(){
   app.set('views', __dirname + '/views');
   app.set('view engine', 'jade');
-  app.use('port', 3015);
+  app.set('port', 3000);
   app.use(express.bodyParser());
   app.use(express.methodOverride());
   app.use(express.cookieParser());
@@ -21,6 +26,7 @@ app.configure(function(){
     secret: "asntoedisaotnehuasontehuasontehuasontehuasonetuhaoeu",
     store: new RedisStore
   }));
+  app.use(require('connect-assets')());
   app.use(app.router);
   app.use(express.static(__dirname + '/public'));
 });
@@ -28,18 +34,23 @@ app.configure(function(){
 app.configure('development', function(){
   app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
 });
-app.confifure('test', function()){
-	app.set('port', '3001')
+
+app.configure('test', function(){
+  app.set('port', 3001);
 });
 
 app.configure('production', function(){
   app.use(express.errorHandler());
 });
+
 // Helpers
 require('./apps/helpers')(app);
 
 // Routes
-require('./apps/authentication/routes')(app)
 
-app.listen(3015);
+require('./apps/authentication/routes')(app)
+require('./apps/admin/routes')(app)
+require('./apps/sidewalk/routes')(app)
+
+app.listen(app.settings.port);
 console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);

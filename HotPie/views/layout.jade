@@ -4,12 +4,17 @@ html
     title= "Hot Pie - " + title
     link(rel='stylesheet', href='/stylesheets/#{stylesheet}.css')
   body
+  
     #header
       h1= title
-      
-    - var flashYypes = ['info' , 'error']
-    each flashtype in flashTypes
-      if flashTypes[flashType]
-        p.flsh(class=flashType)
-          = flash[flshType]
+  
+    - var flashTypes = ['info', 'error']
+    each flashType in flashTypes
+      if flash[flashType]
+        p.flash(class=flashType)
+          = flash[flashType]
+  
     != body
+    
+    script(src='/socket.io/socket.io.js')
+    != js('application')
