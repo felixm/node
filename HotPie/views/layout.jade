@@ -1,0 +1,15 @@
+!!!
+html
+  head
+    title= "Hot Pie - " + title
+    link(rel='stylesheet', href='/stylesheets/#{stylesheet}.css')
+  body
+    #header
+      h1= title
+      
+    - var flashYypes = ['info' , 'error']
+    each flashtype in flashTypes
+      if flashTypes[flashType]
+        p.flsh(class=flashType)
+          = flash[flshType]
+    != body
